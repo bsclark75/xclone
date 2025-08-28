@@ -18,3 +18,11 @@ def help():
 def about():
     return render_template("about.html", title="About")
 
+@main.route("/contact")
+def contact():
+    return render_template("contact.html", title="Contact")
+
+@main.route("/signup")
+def signup():
+    return render_template("users/new.html", title="New user")
+

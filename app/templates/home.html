@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Sample App</h1>
-<p>
-    This is the home page for converting the app laid out in
-    <em>Ruby on Rails Tutorial</em> by Michael Hartl to a Python Flask app.
-</p>
+<div class="center jumbotron">
+  <h1>Welcome to the Sample App</h1>
+  <h2>This is the home page for the converted from Ruby on Rails based
+       on Ruby on Rails Tutorial by Michael Hartl</h2>
+  <a href="{{ url_for('main.signup')  }}" class="btn btn-lg btn-primary">Sing up now!</a>
+</div>    
 {% endblock %}
  

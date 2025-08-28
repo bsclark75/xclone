@@ -6,3 +6,5 @@ class Config:
         "DATABASE_URL", "sqlite:///db.sqlite3"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ASSETS_DEBUG = True
+
