@@ -1,5 +1,5 @@
 from flask import Flask
-from app.extensions import db, migrate, assets, init_assets
+from app.extensions import db, migrate, assets, init_assets, bcrypt
 
 def create_app():
     app = Flask(__name__)
@@ -9,6 +9,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     init_assets(app)
+    bcrypt.init_app(app)
+
 
     # Import models so Alembic sees them
     from app import models
