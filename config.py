@@ -1,10 +1,11 @@
 import os
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY", "devkey")
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL", "sqlite:///db.sqlite3"
-    )
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "dev_secret_key"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or \
+        "sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ASSETS_DEBUG = True
 
