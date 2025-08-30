@@ -1,9 +1,16 @@
+import os
 from flask import Flask
 from app.extensions import db, migrate, assets, init_assets, bcrypt
+from app.models import User
+from app.helpers import gravatar_for
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object("config.Config")
+
+    # Automatically enable debug if FLASK_ENV=development
+    if os.environ.get("FLASK_ENV") == "development":
+        app.config["DEBUG"] = True
 
     # Init extensions
     db.init_app(app)
@@ -19,5 +26,16 @@ def create_app():
     from app.routes import main
     app.register_blueprint(main)
 
+    with app.app_context():
+        db.create_all()
+        # Check for default user
+        if not User.query.filter_by(email="admin@example.com").first():
+            default_user = User(name="Admin", email="admin@example.com")
+            default_user.set_password("changeme123")
+            db.session.add(default_user)
+            db.session.commit()
+
+    # Make helper available inside templates
+    app.jinja_env.globals.update(gravatar_for=gravatar_for)
     return app
 

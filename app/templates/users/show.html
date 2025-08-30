@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+       <h1>
+            {{ gravatar_for(user) | safe}}
+            {{ user.name }}
+        </h1> 
+    </section>
+  </aside>
+</div>
+
+{% endblock %}

@@ -26,3 +26,9 @@ def contact():
 def signup():
     return render_template("users/new.html", title="New user")
 
+@main.route("/users/<int:user_id>")
+def show_user(user_id):
+    from app.models import User
+    user = User.query.get_or_404(user_id)
+    return render_template("users/show.html", user=user, title=user.name)
+
