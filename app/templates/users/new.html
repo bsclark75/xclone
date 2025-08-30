@@ -3,8 +3,20 @@
 {% block content %}
 
 <h1>Sign Up</h1>
-<p>
-   This is a sign up page for new users.
-</p>
-
+<div class="row">
+   <div class="col-md-6 col-md-offset-3">
+      <form method="POST" action="{{ url_for('main.signup') }}">
+         <label for="name">Name</label>
+         <input type="text" class="form-control" name="name" id="name" required>
+         <label for="email">Email</label>
+         <input type="email" class="form-control" name="email" id="email" required>
+         <label for="password">Password</label>
+         <input type="password" class="form-control" name="password" id="password" required>
+         <label for="confirm_password">Confirm Password</label>
+         <input type="password" class="form-control" name="confirm_password" id="confirm_password" required>
+         <br>
+         <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+   </div>
+</div>
 {% endblock %}
