@@ -42,13 +42,14 @@ def signup():
 
             # Create new user — model handles hashing & validation
             new_user = User(name=name, email=email)
-            new_user.set_password = password  # triggers hashing in model
+            new_user.set_password(password)  # triggers hashing in model
 
             db.session.add(new_user)
             db.session.commit()
 
             flash("Account created successfully! Please log in.", "success")
-            return redirect(url_for("main.index"))
+            return redirect(url_for("main.show_user", user_id=new_user.id))
+
 
         except ValueError as e:
             db.session.rollback()
