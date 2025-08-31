@@ -7,6 +7,8 @@ from app.helpers import gravatar_for
 def create_app():
     app = Flask(__name__)
     app.config.from_object("config.Config")
+    app.config["SECRET_KEY"] = "supersecretkey"  # Replace with something secure
+
 
     # Automatically enable debug if FLASK_ENV=development
     if os.environ.get("FLASK_ENV") == "development":
@@ -23,8 +25,9 @@ def create_app():
     from app import models
 
     # Register blueprints
-    from app.routes import main
+    from app.routes import main, sessions_bp
     app.register_blueprint(main)
+    app.register_blueprint(sessions_bp)
 
     with app.app_context():
         db.create_all()

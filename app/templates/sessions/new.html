@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Login</h1>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form method="POST" action="{{ url_for('sessions.create') }}">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" required>
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <p>New User? <a href="{{ url_for('main.signup') }}">Sign Up Now!</a> </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from app.models import User, db
 
 main = Blueprint("main", __name__)
@@ -62,3 +62,32 @@ def signup():
 def show_user(user_id):
     user = User.query.get_or_404(user_id)
     return render_template("users/show.html", user=user, title=user.name)
+
+sessions_bp = Blueprint("sessions", __name__, url_prefix="/sessions")
+
+# GET /sessions/new → Show login form
+@sessions_bp.route("/new", methods=["GET"])
+def new():
+    return render_template("sessions/new.html")
+
+# POST /sessions → Handle login
+@sessions_bp.route("", methods=["POST"])
+def create():
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    user = User.query.filter_by(email=email).first()
+    if not user or not user.check_password(password):
+        flash("Invalid email or password", "danger")
+        return redirect(url_for("sessions.new"))
+
+    session["user_id"] = user.id
+    flash("Logged in successfully!", "success")
+    return redirect(url_for("main.show_user", user_id=user.id))
+
+# DELETE /sessions → Logout
+@sessions_bp.route("", methods=["DELETE", "POST"])
+def destroy():
+    session.clear()
+    flash("Logged out successfully", "info")
+    return redirect(url_for("home.index"))
