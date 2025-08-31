@@ -1,43 +1,30 @@
-def test_index(client):
-    response = client.get("/")
-    assert response.status_code == 200
-    assert b"<title>Home</title>" in response.data
+import pytest
 
-def test_home(client):
-    response = client.get("/home")
+@pytest.mark.parametrize("route, expected_text", [
+    ("/", b"<title>Home</title>"),
+    ("/home", b"This is the home page"),
+    ("/help", b"This is a holding page"),
+    ("/about", b"This is an about page"),
+    ("/contact", b"<title>Contact</title>"),
+    ("/signup", b"<title>Sign Up</title>")
+])
+def test_static_routes(client, route, expected_text):
+    """Ensure key routes return 200 and correct content."""
+    response = client.get(route)
     assert response.status_code == 200
-    assert b"This is the home page" in response.data
+    assert expected_text in response.data
 
-def test_help(client):
-    response = client.get("/help")
-    assert response.status_code == 200
-    assert b"This is a holding page" in response.data
-
-def test_about(client):
-    response = client.get("/about")
-    assert response.status_code == 200
-    assert b"This is an about page" in response.data
-
-def test_contact(client):
-    response = client.get("/contact")
-    assert response.status_code == 200
-    assert b"<title>Contact</title>" in response.data
-
-def test_signup(client):
-    response = client.get("/signup")
-    assert response.status_code == 200
-    assert b"<title>New user</title>" in response.data
 
 def test_static_css_served(client):
-    """Integration test: confirm compiled SCSS -> CSS is served"""
     response = client.get("/static/css/style.css")
     assert response.status_code == 200
-    assert b"body" in response.data  # Ensure CSS contains valid content
+    assert b"body" in response.data
+
 
 def test_404_page(client):
-    """Integration test: hitting an invalid route returns 404"""
     response = client.get("/not-a-real-page")
     assert response.status_code == 404
+
 
 def test_navbar_links_present(client):
     response = client.get("/")

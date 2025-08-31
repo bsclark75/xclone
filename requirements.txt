@@ -5,3 +5,5 @@ flask-assets
 libsass
 flask-migrate
 bcrypt
+flask-wtf
+WTForms

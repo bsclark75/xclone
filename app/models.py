@@ -14,15 +14,14 @@ class User(db.Model):
     def __repr__(self):
         return f"<User {self.name}>"
 
-    # Hash password before storing
-    def set_password(self, password):
-        if not password or not password.strip():
+    # Use property-style setter to handle password hashing automatically
+    def set_password(self, plaintext_password):
+        if not plaintext_password or not plaintext_password.strip():
             raise ValueError("Password cannot be blank")
-        if len(password) < 6:
+        if len(plaintext_password) < 6:
             raise ValueError("Password must be at least 6 characters")
-        self.password_digest = bcrypt.generate_password_hash(password).decode("utf-8")
+        self.password_digest = bcrypt.generate_password_hash(plaintext_password).decode("utf-8")
 
-    # Check password for login
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_digest, password)
 
@@ -48,3 +47,4 @@ class User(db.Model):
         if existing_user and existing_user.id != self.id:
             raise ValueError("Email already exists")
         return value
+

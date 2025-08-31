@@ -5,6 +5,20 @@
 <h1>Sign Up</h1>
 <div class="row">
    <div class="col-md-6 col-md-offset-3">
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
       <form method="POST" action="{{ url_for('main.signup') }}">
          <label for="name">Name</label>
          <input type="text" class="form-control" name="name" id="name" required>
