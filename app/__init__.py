@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from app.extensions import db, migrate, assets, init_assets, bcrypt
 from app.models import User
-from app.helpers import gravatar_for
+from app.helpers import gravatar_for, logged_in, current_user
 
 def create_app():
     app = Flask(__name__)
@@ -40,5 +40,7 @@ def create_app():
 
     # Make helper available inside templates
     app.jinja_env.globals.update(gravatar_for=gravatar_for)
+    app.jinja_env.globals.update(logged_in=logged_in)
+    app.jinja_env.globals.update(current_user=current_user)
     return app
 

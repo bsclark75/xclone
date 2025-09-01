@@ -47,7 +47,8 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
 
-            flash("Account created successfully! Please log in.", "success")
+            session["user_id"] = new_user.id
+            flash("Account created successfully! You are now logged in.", "success")
             return redirect(url_for("main.show_user", user_id=new_user.id))
 
 
@@ -86,8 +87,8 @@ def create():
     return redirect(url_for("main.show_user", user_id=user.id))
 
 # DELETE /sessions → Logout
-@sessions_bp.route("", methods=["DELETE", "POST"])
+@sessions_bp.route("/logout", methods=["DELETE", "POST"])
 def destroy():
     session.clear()
     flash("Logged out successfully", "info")
-    return redirect(url_for("home.index"))
+    return redirect(url_for("main.index"))

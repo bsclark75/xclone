@@ -4,8 +4,31 @@
     <nav>
        <ul class="nav navbar-nav navbar-right">
          <li><a href="{{ url_for('main.home') }}">Home</li></a>
-	 <li><a href="{{ url_for('main.help') }}">Help</li></a>
-         <li><a href="{{ url_for('sessions.new') }}">Log in</li></a>
+	       <li><a href="{{ url_for('main.help') }}">Help</li></a>
+         {% if logged_in() %}
+           <li><a href="#">Users</a></li>
+           <li class="dropdown">
+             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              Account <b class="caret"></b></a>
+               {{ current_user.name }} <span class="caret"></span>
+             </a>
+             <ul class="dropdown-menu">
+               <li><a href="{{ url_for("main.show_user", user_id=current_user()) }}">Profile</a></li>
+               <li><a href="#">Settings</a></li>
+               <li class="divider"></li>
+               <li>
+                    <form action="{{ url_for('sessions.destroy') }}" method="POST" style="display:inline;">
+                      <button type="submit" class="btn btn-link" style="padding:0; border:none; background:none;">
+                        Log Out
+                      </button>
+                    </form>
+
+               </li>
+             </ul>
+           </li>
+         {% else %}
+         <li><a href="{{ url_for('sessions.new') }}">Log in</a></li>
+        {% endif %}
        </ul>
     </nav>
  </div>
