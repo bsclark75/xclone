@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(256), unique=True, nullable=False, index=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
     password_digest = db.Column(db.String, nullable=False)
+    remember_token = db.Column(db.String, nullable=True)
 
     def __repr__(self):
         return f"<User {self.name}>"
@@ -48,3 +49,14 @@ class User(db.Model):
             raise ValueError("Email already exists")
         return value
 
+    def new_token(self):
+        import os
+        import base64
+        token = base64.urlsafe_b64encode(os.urandom(16)).decode('utf-8')
+        return token
+    
+    def remember(self):
+        token = self.new_token()
+        self.remember_token = token
+        db.session.commit()
+        return token
