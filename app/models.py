@@ -60,3 +60,6 @@ class User(db.Model):
         self.remember_token = token
         db.session.commit()
         return token
+    
+    def authenticated(self, token):
+        return self.remember_token == token

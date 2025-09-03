@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from app.models import User, db
+from app.helpers import remember, log_in
 
 main = Blueprint("main", __name__)
 
@@ -82,7 +83,8 @@ def create():
         flash("Invalid email or password", "danger")
         return redirect(url_for("sessions.new"))
 
-    session["user_id"] = user.id
+    log_in(user)
+    remember(user)
     flash("Logged in successfully!", "success")
     return redirect(url_for("main.show_user", user_id=user.id))
 
