@@ -48,5 +48,13 @@ def log_in(user):
     return session
 
 def log_out():
+    forget(current_user())
     session.pop("user_id", None)
     current_user = None
+
+def forget(user):
+    user.forget()
+    response = make_response("Cookies have been cleared!")
+    response.set_cookie("user_id", '', expires=0)
+    response.set_cookie("remember_token", '', expires=0)
+    return response

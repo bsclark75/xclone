@@ -63,3 +63,7 @@ class User(db.Model):
     
     def authenticated(self, token):
         return self.remember_token == token
+    
+    def forget(self):
+        self.remember_token = None
+        db.session.commit()
