@@ -23,3 +23,16 @@ def signup(client, name="Test User", email="test@example.com",
         },
         follow_redirects=follow,
     )
+
+def login(client, email, password, remember_me=False):
+    """Helper to log in the test user."""
+    return client.post(
+        "/sessions",
+        data=dict(
+            email=email,
+            password=password,
+            remember_me="1" if remember_me else "0"  # <-- FIXED
+        ),
+        follow_redirects=False
+    )
+

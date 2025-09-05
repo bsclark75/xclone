@@ -1,7 +1,8 @@
 # tests/conftest.py
 import pytest
 from app import create_app
-from app.extensions import db  # <- use the same db as models
+from app.extensions import db
+from app.models import User  
 
 @pytest.fixture(scope="function")
 def app():
@@ -28,3 +29,12 @@ def db_session(app):
         yield db.session
     finally:
         db.session.rollback()
+
+@pytest.fixture
+def new_user(app):
+    """Creates and returns a test user."""
+    user = User(name="Brian Clark", email="brian@example.com")
+    user.set_password("password123")
+    db.session.add(user)
+    db.session.commit()
+    return user

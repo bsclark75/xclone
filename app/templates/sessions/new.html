@@ -8,6 +8,8 @@
             <input type="email" name="email" class="form-control" required>
             <label>Password</label>
             <input type="password" name="password" class="form-control" required>
+            <label class="checkbox inline"><input type="checkbox" name="remember_me">
+                <span>Remember me on this computer</span></label>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
         <p>New User? <a href="{{ url_for('main.signup') }}">Sign Up Now!</a> </p>

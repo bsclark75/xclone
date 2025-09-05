@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from app.models import User, db
-from app.helpers import remember, log_in
+from app.helpers import remember, forget, log_in
 
 main = Blueprint("main", __name__)
 
@@ -29,7 +29,7 @@ def signup():
     if request.method == "POST":
         try:
             name = request.form.get("name")
-            email = request.form.get("email")
+            email = request.form.get("email", "").strip().lower()
             password = request.form.get("password")
             confirm_password = request.form.get("confirm_password")
 
@@ -75,7 +75,7 @@ def new():
 # POST /sessions → Handle login
 @sessions_bp.route("", methods=["POST"])
 def create():
-    email = request.form.get("email")
+    email = request.form.get("email", "").strip().lower()
     password = request.form.get("password")
 
     user = User.query.filter_by(email=email).first()
@@ -84,9 +84,13 @@ def create():
         return redirect(url_for("sessions.new"))
 
     log_in(user)
-    remember(user)
+    if request.form.get("remember_me") == "1":
+        response = remember(user)
+    else:
+        response = forget(user)
+
     flash("Logged in successfully!", "success")
-    return redirect(url_for("main.show_user", user_id=user.id))
+    return response
 
 # DELETE /sessions → Logout
 @sessions_bp.route("/logout", methods=["DELETE", "POST"])

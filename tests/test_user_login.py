@@ -1,24 +1,6 @@
-import pytest
 from app import db
 from app.models import User
-
-
-@pytest.fixture
-def new_user(app):
-    """Creates and returns a test user."""
-    user = User(name="Brian Clark", email="brian@example.com")
-    user.set_password("password123")
-    db.session.add(user)
-    db.session.commit()
-    return user
-
-def login(client, email, password):
-    """Helper to log in the test user."""
-    return client.post(
-        "/sessions",  # adjust if your route is different
-        data=dict(email=email, password=password),
-        follow_redirects=True
-    )
+from tests.utils import login
 
 # ✅ Test when user is NOT logged in
 def test_header_for_logged_out_user(client):
@@ -70,3 +52,34 @@ def test_successful_signup_auto_login(client):
     # Check session is active by looking for "Log Out" link instead of "Log In"
     assert b"Log Out" in response.data
     assert b"Log in" not in response.data
+
+def test_login_with_remember_me(client, new_user):
+    """Ensure logging in with remember_me sets the cookie."""
+
+    response = login(client, "brian@example.com", "password123", remember_me=True)
+
+    assert response.status_code == 302
+
+    # Pull cookies from Flask's internal storage
+    set_cookie_headers = response.headers.getlist("Set-Cookie")
+    assert any("remember_token=" in header for header in set_cookie_headers)  
+    assert any("user_id=" in header for header in set_cookie_headers)
+
+def test_login_without_remember_me(client, new_user):
+    """Ensure logging in without remember_me does NOT set the cookie."""
+    response = login(client, "brian@example.com", "password123", remember_me=False)
+
+    assert response.status_code == 302
+
+    set_cookie_headers = response.headers.getlist("Set-Cookie")
+    assert any("remember_token=" not in header for header in set_cookie_headers)
+
+
+def test_remember_function_sets_cookies(app, new_user):
+    from app.helpers import remember
+    with app.test_request_context():
+        response = remember(new_user)
+        cookies = response.headers.getlist("Set-Cookie")
+        assert any("remember_token=" in c for c in cookies)
+        assert any("user_id=" in c for c in cookies)
+
