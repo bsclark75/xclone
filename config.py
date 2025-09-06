@@ -8,4 +8,5 @@ class Config:
         "sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ASSETS_DEBUG = True
+    ASSETS_AUTO_BUILD = True  # Rebuild automatically when files change
 

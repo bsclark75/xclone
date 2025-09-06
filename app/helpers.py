@@ -23,7 +23,7 @@ def current_user():
 
     if user_id and remember_token:
         user = User.query.get(user_id)
-        if user and user.verify_token(remember_token):
+        if user and user.authenticated(remember_token):
             log_in(user)  # Store back into session
             return user
 

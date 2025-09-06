@@ -2,13 +2,14 @@
 {% block content %}
 <h1>Login</h1>
 <div class="row">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6 col-md-offset-3">
+
         <form method="POST" action="{{ url_for('sessions.create') }}">
             <label>Email</label>
             <input type="email" name="email" class="form-control" required>
             <label>Password</label>
             <input type="password" name="password" class="form-control" required>
-            <label class="checkbox inline"><input type="checkbox" name="remember_me">
+            <label class="checkbox-inline"><input type="checkbox" name="remember_me">
                 <span>Remember me on this computer</span></label>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
