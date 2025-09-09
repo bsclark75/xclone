@@ -13,9 +13,10 @@
                {{ current_user().name }} <span class="caret"></span>
              </a>
              <ul class="dropdown-menu">
-               <li><a href="{{ url_for('main.show_user', user_id=current_user().id) }}">
+               <li><a href="{{ url_for('users.show_user', user_id=current_user().id) }}">
                   Profile</a></li>
-               <li><a href="#">Settings</a></li>
+               <li><a href="{{ url_for('users.edit_user', user_id=current_user().id) }}">
+                  Settings</a></li>
                <li class="divider"></li>
                <li>
                     <form action="{{ url_for('sessions.destroy') }}" method="POST" style="display:inline;">

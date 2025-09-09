@@ -1,7 +1,7 @@
-from flask import session, g, request, make_response, redirect, url_for
+from flask import session, g, request
 from app.models import User
-from config import Config
-from itsdangerous import URLSafeTimedSerializer
+from app.services.user_service import forget
+
 
 def gravatar_for(user):
     import hashlib
@@ -34,15 +34,6 @@ def logged_in():
         return True
     return False
 
-def remember(user):
-    user.remember()
-    serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
-    encrypted_user_id = serializer.dumps(user.id)
-    response = make_response(redirect(url_for("main.show_user", user_id=user.id)))  
-    response.set_cookie("user_id", encrypted_user_id, max_age=60*60*24*30, httponly=True, samesite="Lax")
-    response.set_cookie("remember_token", user.remember_token, max_age=60*60*24*30, httponly=True, samesite="Lax")
-    return response
-
 def log_in(user):
     session["user_id"] = user.id
     return session
@@ -52,9 +43,3 @@ def log_out():
     session.pop("user_id", None)
     current_user = None
 
-def forget(user):
-    user.forget()
-    response = make_response(redirect(url_for("main.show_user", user_id=user.id)))
-    response.set_cookie("user_id", '', expires=0)
-    response.set_cookie("remember_token", '', expires=0)
-    return response

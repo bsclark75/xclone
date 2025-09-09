@@ -1,17 +1,15 @@
-# tests/conftest.py
 import pytest
-from app import create_app
-from app.extensions import db
-from app.models import User  
+from app import create_app, db
+from app.models import User
 
 @pytest.fixture(scope="function")
 def app():
     app = create_app()
-    app.config.update({
-        "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",  # fresh DB per test
-        "WTF_CSRF_ENABLED": False,
-    })
+    app.config.update(
+        TESTING=True,
+        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"  # Use in-memory DB
+    )
+
     with app.app_context():
         db.create_all()
         yield app

@@ -10,8 +10,13 @@ def test_login_success(client, test_user):
         "password": "password123"
     }, follow_redirects=True)
 
-    # ✅ Successful login should redirect to home page and flash success message
     assert response.status_code == 200
+
+    if b"Logged in successfully!" not in response.data:
+        print("\n=== DEBUG RESPONSE ===")
+        print(response.data.decode("utf-8"))
+        print("======================")
+
     assert b"Logged in successfully!" in response.data
 
 def test_login_failure(client, test_user):

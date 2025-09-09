@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Update your profile</h1>
+<div class="row">
+   <div class="col-md-6 col-md-offset-3">
+      <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}">
+         <label for="name">Name</label>
+         <input type="text" class="form-control" name="name" id="name" required value="{{ user.name }}">
+         <label for="email">Email</label>
+         <input type="email" class="form-control" name="email" id="email" required value="{{ user.email }}">
+         <label for="password">Password</label>
+         <input type="password" class="form-control" name="password" id="password" required>
+         <label for="confirm_password">Confirm Password</label>
+         <input type="password" class="form-control" name="confirm_password" id="confirm_password" required>
+         <br>
+         <button type="submit" class="btn btn-primary">Save changes</button>
+      </form>
+      <div class="gravatar_edit">
+         {{ gravatar_for(user) | safe}}
+         <a href="https://gravatar.com/emails" target="_blank">Change your Gravatar at Gravatar.com</a>
+      </div>
+   </div>
+</div>
+{% endblock %}

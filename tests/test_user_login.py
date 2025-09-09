@@ -62,6 +62,7 @@ def test_login_with_remember_me(client, new_user):
 
     # Pull cookies from Flask's internal storage
     set_cookie_headers = response.headers.getlist("Set-Cookie")
+    print("Set-Cookie headers:", set_cookie_headers)
     assert any("remember_token=" in header for header in set_cookie_headers)  
     assert any("user_id=" in header for header in set_cookie_headers)
 
@@ -76,10 +77,23 @@ def test_login_without_remember_me(client, new_user):
 
 
 def test_remember_function_sets_cookies(app, new_user):
-    from app.helpers import remember
+    from app.services.user_service import remember
+    from flask import make_response
+
     with app.test_request_context():
-        response = remember(new_user)
+        # ✅ Create a dummy response for remember() to modify
+        response = make_response("Testing remember cookies")
+
+        # ✅ Call the updated remember() function
+        response = remember(new_user, response)
+
+        # ✅ Grab all cookies set on the response
         cookies = response.headers.getlist("Set-Cookie")
+
+        # ✅ Check that remember_token cookie was set
         assert any("remember_token=" in c for c in cookies)
+
+        # ✅ Check that user_id cookie was set
         assert any("user_id=" in c for c in cookies)
+
 
