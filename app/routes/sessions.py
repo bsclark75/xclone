@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, make_response
+from flask import Blueprint, render_template, request, redirect, url_for, flash, make_response, session
 from app.services.user_service import authenticate_user, remember, forget
 from app.helpers import log_in, log_out
 
@@ -21,12 +21,15 @@ def create():
     if not user:
         flash("Invalid email or password", "danger")
         return render_template("sessions/new.html", email=email, remember_me=remember_me)
-    session = log_in(user)
 
-    # ✅ Create a redirect response
-    response = make_response(redirect(url_for("main.index")))
+    # ✅ Don't overwrite Flask's session
+    log_in(user)
 
-    # ✅ Delegate remember-me to helpers
+    # ✅ Redirect to the intended page if friendly forwarding is set
+    next_page = session.pop("next", None)
+    response = make_response(redirect(next_page or url_for("main.index")))
+
+    # ✅ Handle remember-me cookies
     if remember_me == "1":
         response = remember(user, response)
     else:

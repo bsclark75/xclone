@@ -36,7 +36,7 @@ def logged_in():
 
 def log_in(user):
     session["user_id"] = user.id
-    return session
+
 
 def log_out(response):
     if logged_in():
@@ -48,3 +48,7 @@ def log_out(response):
 def is_current_user(user):
     cu = current_user()
     return cu and cu.id == user.id
+
+def store_location():
+    if request.method == "GET" and "next" not in session:
+        session["next"] = request.url
