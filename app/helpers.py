@@ -38,8 +38,10 @@ def log_in(user):
     session["user_id"] = user.id
     return session
 
-def log_out():
-    forget(current_user())
-    session.pop("user_id", None)
-    current_user = None
+def log_out(response):
+    if logged_in():
+        user = current_user()
+        response = forget(user, response)
+        session.pop("user_id", None)
+    return response
 

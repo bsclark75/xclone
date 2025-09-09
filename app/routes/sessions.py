@@ -38,6 +38,7 @@ def create():
 # DELETE /sessions → Logout
 @sessions_bp.route("/logout", methods=["DELETE", "POST"])
 def destroy():
-    log_out()
+    response = make_response(redirect(url_for("main.index")))
+    response = log_out(response)
     flash("Logged out successfully", "info")
-    return redirect(url_for("main.index"))
+    return response

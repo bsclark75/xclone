@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from app.models import User
 from app.services.user_service import update_user
+from app.utils.auth import logged_in_user
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -10,6 +11,7 @@ def show_user(user_id):
     return render_template("users/show.html", user=user, title=user.name)
 
 @users_bp.route("<int:user_id>/edit", methods=["GET", "POST"])
+@logged_in_user
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
     if request.method == "POST":
