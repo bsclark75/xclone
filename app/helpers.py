@@ -45,3 +45,6 @@ def log_out(response):
         session.pop("user_id", None)
     return response
 
+def is_current_user(user):
+    cu = current_user()
+    return cu and cu.id == user.id
