@@ -77,7 +77,7 @@ def test_successful_edit_with_friendly_forwarding(client):
     user1 = create_user()
 
     # Step 1: Try to access edit page while logged out → should redirect to login
-    resp = client.get("/users/2/edit")
+    resp = client.get("/users/1/edit")
     assert resp.status_code == 302
     assert "/sessions/new" in resp.location
 

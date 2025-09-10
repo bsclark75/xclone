@@ -5,9 +5,12 @@ from app.models import User
 from app.helpers import gravatar_for, logged_in, current_user
 
 
-def create_app():
+def create_app(config_class=None):
     app = Flask(__name__)
     app.config.from_object("config.Config")
+
+    if config_class:
+        app.config.from_object(config_class)
 
     # Use environment variable fallback for SECRET_KEY
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "supersecretkey")

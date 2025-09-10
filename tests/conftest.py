@@ -1,19 +1,14 @@
 import pytest
 from app import create_app, db
+from config import TestConfig
 from app.models import User
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def app():
-    app = create_app()
-    app.config.update(
-        TESTING=True,
-        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"  # Use in-memory DB
-    )
-
+    app = create_app(TestConfig)
     with app.app_context():
         db.create_all()
         yield app
-        db.session.remove()
         db.drop_all()
 
 @pytest.fixture(scope="function")

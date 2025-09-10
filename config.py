@@ -10,3 +10,6 @@ class Config:
     ASSETS_DEBUG = True
     ASSETS_AUTO_BUILD = True  # Rebuild automatically when files change
 
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
