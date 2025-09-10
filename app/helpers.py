@@ -3,11 +3,11 @@ from app.models import User
 from app.services.user_service import forget
 
 
-def gravatar_for(user):
+def gravatar_for(user, size=80):
     import hashlib
     email = user.email.strip().lower()
     email_hash = hashlib.md5(email.encode('utf-8')).hexdigest()
-    gravatar_url = f"https://www.gravatar.com/avatar/{email_hash}?d=identicon&s=100"
+    gravatar_url = f"https://www.gravatar.com/avatar/{email_hash}?d=identicon&s={size}"
     return f'<img src="{gravatar_url}" alt="{user.name}\'s Gravatar" class="gravatar">'
 
 def current_user():

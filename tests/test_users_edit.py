@@ -101,3 +101,4 @@ def test_successful_edit_with_friendly_forwarding(client):
     assert resp.status_code == 200
     assert "User updated successfully!" in html
     assert "New Name" in html
+

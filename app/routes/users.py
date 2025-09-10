@@ -28,3 +28,9 @@ def edit_user(user_id):
             flash(str(e), "danger")
             return render_template("users/edit.html", user=user, title="Edit Profile")
     return render_template("users/edit.html", user=user, title="Edit Profile")
+
+@users_bp.route("")
+@logged_in_user
+def index():
+    users = User.query.all()
+    return render_template("users/index.html", users=users, title="All Users")
