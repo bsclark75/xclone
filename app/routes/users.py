@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from app.models import User
 from app.services.user_service import update_user
 from app.utils.auth import logged_in_user, correct_user
+from flask_paginate import Pagination, get_page_parameter
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -32,5 +33,11 @@ def edit_user(user_id):
 @users_bp.route("")
 @logged_in_user
 def index():
-    users = User.query.all()
-    return render_template("users/index.html", users=users, title="All Users")
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 30
+
+    # Use SQLAlchemy's built-in pagination
+    pagination_obj = User.query.order_by(User.name).paginate(page=page, per_page=per_page, error_out=False)
+    pagination = Pagination(page=page, total=pagination_obj.total, per_page=per_page, css_framework="bootstrap3")
+
+    return render_template("users/index.html", users=pagination_obj.items, pagination=pagination)

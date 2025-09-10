@@ -3,6 +3,12 @@
 {% block content %}
 
 <h1>All Users</h1>
+
+<!-- Pagination -->
+<div class="text-center">
+    {{ pagination.links }}
+</div>
+
 <ul class="users">
     {% for user in users %}
         <li>
@@ -10,4 +16,9 @@
             <a href="{{ url_for('users.show_user', user_id=user.id) }}">{{ user.name }}</a></li>
     {% endfor %}
 </ul>
+
+<!-- Pagination -->
+<div class="text-center">
+    {{ pagination.links }}
+</div>
 {% endblock %}
