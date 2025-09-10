@@ -7,3 +7,5 @@ flask-migrate
 bcrypt
 flask-wtf
 WTForms
+faker
+
