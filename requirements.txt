@@ -9,3 +9,4 @@ flask-wtf
 WTForms
 faker
 flask-paginate
+beautifulsoup4
