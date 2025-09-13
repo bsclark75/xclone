@@ -48,6 +48,7 @@ def create_app(config_class=None):
     if not app.config.get("TESTING", False):
         with app.app_context():
             _init_db_and_create_default_admin()
+            #pass  Disabled to avoid interfering with migrations
 
     return app
 
@@ -59,7 +60,7 @@ def _init_db_and_create_default_admin():
 
     # Check if admin user exists
     if not User.query.filter_by(email="admin@example.com").first():
-        admin = User(name="Admin", email="admin@example.com")
+        admin = User(name="Admin", email="admin@example.com",admin=True)
         admin.set_password("changeme123")
         db.session.add(admin)
         db.session.commit()

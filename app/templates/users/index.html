@@ -13,7 +13,12 @@
     {% for user in users %}
         <li>
             {{ gravatar_for(user, size=50) | safe }}
-            <a href="{{ url_for('users.show_user', user_id=user.id) }}">{{ user.name }}</a></li>
+            <a href="{{ url_for('users.show_user', user_id=user.id) }}">{{ user.name }}</a>
+            {% set cu = current_user() %}
+            {% if cu and cu.admin and cu.id != user.id %}
+                |  <a href="{{ url_for('users.delete', user_id=user.id) }}">Delete</a>
+            {% endif %}
+        </li>
     {% endfor %}
 </ul>
 

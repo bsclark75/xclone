@@ -2,9 +2,9 @@
 from app.models import User
 from app.extensions import db
 
-def create_user(name="Test User", email="test@example.com", password="password123"):
+def create_user(name="Test User", email="test@example.com", password="password123", admin=False):
     """Create a persisted user using the model's bcrypt-based password setter."""
-    user = User(name=name, email=email)
+    user = User(name=name, email=email, admin=admin)
     user.set_password(password)  # bcrypt via model
     db.session.add(user)
     db.session.commit()
@@ -35,4 +35,8 @@ def login(client, email, password, remember_me=False, follow=False):
         ),
         follow_redirects=follow
     )
+
+def get_user_count():
+    """Return the current user count."""
+    return User.query.count()
 

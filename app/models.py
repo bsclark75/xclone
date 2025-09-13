@@ -11,6 +11,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
     password_digest = db.Column(db.String, nullable=False)
     remember_token = db.Column(db.String, nullable=True)
+    admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"<User {self.name}>"

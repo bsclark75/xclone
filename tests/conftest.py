@@ -26,7 +26,7 @@ def db_session(app):
 @pytest.fixture
 def new_user(app):
     """Creates and returns a test user."""
-    user = User(name="Brian Clark", email="brian@example.com")
+    user = User(name="Brian Clark", email="brian@example.com", admin=True)
     user.set_password("password123")
     db.session.add(user)
     db.session.commit()

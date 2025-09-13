@@ -106,3 +106,11 @@ def forget(user, response):
     user.forget()
     response.delete_cookie("remember_token")
     return response
+
+def destory_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return True
+    return False

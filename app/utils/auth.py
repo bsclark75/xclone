@@ -28,3 +28,19 @@ def correct_user(f):
         # Otherwise, allow the request through
         return f(*args, **kwargs)
     return decorated_function
+
+def admin_user(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user_id" not in session:
+            store_location()
+            flash("You must be logged in to access this page.", "warning")
+            return redirect(url_for("sessions.new"))
+        
+        user = User.query.get(session["user_id"])
+        if not user.admin:
+            flash("You do not have permission to access this page.", "danger")
+            return redirect(url_for("main.index"))  # Adjust to your home route
+        
+        return f(*args, **kwargs)
+    return decorated_function
