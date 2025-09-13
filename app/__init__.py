@@ -48,7 +48,7 @@ def create_app(config_class=None):
     if not app.config.get("TESTING", False):
         with app.app_context():
             _init_db_and_create_default_admin()
-            #pass  Disabled to avoid interfering with migrations
+            #pass #Disabled to avoid interfering with migrations
 
     return app
 

@@ -42,7 +42,7 @@ def index():
 
     return render_template("users/index.html", users=pagination_obj.items, pagination=pagination)
 
-@users_bp.route("<int:user_id>/delete", methods=["POST"])
+@users_bp.route("<int:user_id>/delete", methods=["GET"])
 @logged_in_user
 @admin_user
 def delete(user_id):

@@ -1,6 +1,7 @@
 from app.extensions import db, bcrypt
 from datetime import datetime, UTC
 from sqlalchemy.orm import validates
+from sqlalchemy import event
 import re
 
 class User(db.Model):
@@ -12,6 +13,9 @@ class User(db.Model):
     password_digest = db.Column(db.String, nullable=False)
     remember_token = db.Column(db.String, nullable=True)
     admin = db.Column(db.Boolean, default=False)
+    activation_digest = db.Column(db.String)
+    activated = db.Column(db.Boolean, default=False)
+    activated_at = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<User {self.name}>"
@@ -68,3 +72,13 @@ class User(db.Model):
     def forget(self):
         self.remember_token = None
         db.session.commit()
+
+    def create_activation_digest(self):
+        token = self.new_token()
+        self.activation_digest = token
+        return token
+
+@event.listens_for(User, "before_insert")
+def user_before_insert(mapper, connection, target):
+    if not target.activation_digest:
+        target.create_activation_digest()
