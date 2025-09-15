@@ -24,35 +24,6 @@ def test_header_for_logged_in_user(client, new_user):
     assert "Users" in html
     #assert new_user.name in html  # Verify current_user's name is displayed
 
-def test_successful_signup_auto_login(client):
-    """Test that a new user is automatically logged in after signup."""
-    # Send POST request to /signup with valid data
-    response = client.post(
-        "/signup",
-        data={
-            "name": "Auto Login",
-            "email": "autologin@example.com",
-            "password": "securepass123",
-            "confirm_password": "securepass123"
-        },
-        follow_redirects=True
-    )
-
-    # Check that we were redirected to the user's profile page
-    assert response.status_code == 200
-    assert b"Auto Login" in response.data  # The profile page should display the user's name
-
-    # Check flash message for successful signup + login
-    assert b"Account created successfully! You are now logged in." in response.data
-
-    # Verify user exists in the database
-    user = User.query.filter_by(email="autologin@example.com").first()
-    assert user is not None
-
-    # Check session is active by looking for "Log Out" link instead of "Log In"
-    assert b"Log Out" in response.data
-    assert b"Log in" not in response.data
-
 def test_login_with_remember_me(client, new_user):
     """Ensure logging in with remember_me sets the cookie."""
 

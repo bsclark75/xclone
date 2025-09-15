@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from app.services.user_service import create_user
+from app.services.user_mailer import send_activation_email
 
 main_bp = Blueprint("main", __name__)
 
@@ -31,9 +32,9 @@ def signup():
                     request.form.get("email"),
                     request.form.get("password"),
                     request.form.get("confirm_password"))
-            session["user_id"] = user.id
-            flash("Account created successfully! You are now logged in.", "success")
-            return redirect(url_for("users.show_user", user_id=user.id))
+            send_activation_email(user)
+            flash("Please check your email to activate your account", "info")
+            return redirect(url_for("main.home"))
         except ValueError as e:
             flash(str(e), "danger")
             return render_template("users/new.html", title="Sign Up")

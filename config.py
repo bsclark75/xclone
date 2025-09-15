@@ -9,6 +9,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ASSETS_DEBUG = True
     ASSETS_AUTO_BUILD = True  # Rebuild automatically when files change
+    MAIL_BACKEND = "console"
+
 
 class TestConfig(Config):
     TESTING = True

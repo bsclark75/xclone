@@ -1,40 +1,42 @@
-from faker import Faker
+# seed_db.py
+from flask_migrate import downgrade, upgrade
 from app import create_app, db
 from app.models import User
 from datetime import datetime
-#import random
+from faker import Faker
 
 fake = Faker()
 
-def seed_users(num_users=99):
+def reset_and_seed(num_users=50):
     app = create_app()
-
     with app.app_context():
-        # Drop & recreate database tables (optional, uncomment if you want a clean DB)
-        db.drop_all()
-        db.create_all()
-        print("Removing and recreating database")
+        # Roll back to base, then upgrade through all migrations
+        downgrade("base")
+        upgrade()
 
-        users = []
-        user = User(name="Admin User",
-                    email="admin@example.com",
-                    admin=True,
-                    activated=True,
-                    activated_at=datetime.now())
-        user.set_password("password123")
-        users.append(user)
+        # Seed users
+        admin = User(
+            name="Admin User",
+            email="admin@example.com",
+            admin=True,
+            activated=True,
+            activated_at=datetime.utcnow()
+        )
+        admin.set_password("password123")
+        db.session.add(admin)
 
         for _ in range(num_users):
-            name = fake.name()
-            email = fake.unique.email()
-
-            user = User(name=name, email=email, activated=True, activated_at=datetime.now())
-            user.set_password("password123")  # Default password for all test users
-            users.append(user)
-            db.session.add(user)
+            u = User(
+                name=fake.name(),
+                email=fake.unique.email(),
+                activated=True,
+                activated_at=datetime.utcnow()
+            )
+            u.set_password("password123")
+            db.session.add(u)
 
         db.session.commit()
-        print(f"✅ Successfully seeded {len(users)} random users into dev.db.")
+        print(f"✅ Reset DB and seeded {num_users+1} users.")
 
 if __name__ == "__main__":
-    seed_users(99)
+    reset_and_seed()

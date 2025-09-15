@@ -1,7 +1,7 @@
 import os
 from flask import Flask
-from app.extensions import db, migrate, assets, init_assets, bcrypt
-from app.models import User
+from app.extensions import *
+#from app.models import User
 from app.helpers import gravatar_for, logged_in, current_user
 
 
@@ -24,6 +24,7 @@ def create_app(config_class=None):
     migrate.init_app(app, db)
     init_assets(app)
     bcrypt.init_app(app)
+    mailer.init_app(app)
 
     # Import models so Alembic can detect them
     from app import models  # noqa
@@ -32,10 +33,12 @@ def create_app(config_class=None):
     from app.routes.main import main_bp
     from app.routes.sessions import sessions_bp
     from app.routes.users import users_bp
+    from app.routes.account_activations import aa_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(sessions_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(aa_bp)
 
     # Make template helpers globally available
     app.jinja_env.globals.update(
@@ -44,23 +47,5 @@ def create_app(config_class=None):
         current_user=current_user,
     )
 
-    # Initialize DB and create default admin ONLY if not testing
-    if not app.config.get("TESTING", False):
-        with app.app_context():
-            _init_db_and_create_default_admin()
-            #pass #Disabled to avoid interfering with migrations
-
     return app
 
-
-def _init_db_and_create_default_admin():
-    """Ensure tables exist before creating a default admin."""
-    # Create all tables if they don't exist yet (safe even if using migrations)
-    db.create_all()
-
-    # Check if admin user exists
-    if not User.query.filter_by(email="admin@example.com").first():
-        admin = User(name="Admin", email="admin@example.com",admin=True)
-        admin.set_password("changeme123")
-        db.session.add(admin)
-        db.session.commit()

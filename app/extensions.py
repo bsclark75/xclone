@@ -2,12 +2,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_assets import Environment, Bundle
 from flask_bcrypt import Bcrypt
+from flask_mailman import Mail
 
 # Initialize empty extension instances
 db = SQLAlchemy()
 migrate = Migrate()
 assets = Environment()
 bcrypt = Bcrypt()
+mailer = Mail()
 
 def init_assets(app):
     """Initialize SCSS/Assets"""

@@ -41,7 +41,7 @@ def test_index_including_pagination_and_delete_links(client, new_user, test_user
 
     # remove a user
     before_count = get_user_count()
-    response = client.post(f"/users/{test_user.id}/delete")
+    response = client.get(f"/users/{test_user.id}/delete")
     after_count = get_user_count()
     assert after_count == before_count - 1
 
