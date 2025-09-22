@@ -82,12 +82,12 @@ def authenticate_user(email, password):
 
 def remember(user, response):
     """Generate a remember token, save it, and attach cookie to response."""
-    user.remember()
+    token = user.remember()
 
     # Attach cookie directly to the response
     response.set_cookie(
-        "remember_token",
-        user.remember_token,
+        "remember_digest",
+        token,
         max_age=30 * 24 * 60 * 60,  # 30 days
         httponly=True,
         samesite="Lax"
@@ -104,7 +104,7 @@ def remember(user, response):
 def forget(user, response):
     """Remove remember token and delete cookie from response."""
     user.forget()
-    response.delete_cookie("remember_token")
+    response.delete_cookie("remember_digest")
     return response
 
 def destory_user(user_id):

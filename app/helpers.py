@@ -19,11 +19,12 @@ def current_user():
 
     # 2. Else check cookies
     user_id = request.cookies.get("user_id")
-    remember_token = request.cookies.get("remember_token")
-
-    if user_id and remember_token:
+    remember_digest = request.cookies.get("remember_digest")
+    print(f"helpers.py: remember_digest {remember_digest}")
+    if user_id and remember_digest:
         user = User.query.get(user_id)
-        if user and user.authenticated(remember_token):
+        #print(remember_digest)
+        if user and user.authenticated("remember",remember_digest):
             log_in(user)  # Store back into session
             return user
 

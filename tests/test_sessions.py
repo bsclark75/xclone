@@ -33,7 +33,7 @@ def test_login_failure(client, test_user):
 def test_current_user_returns_right_user_when_session_is_none(client, test_user):
     """Test current_user returns the correct user when session is None but remember-me cookies exist."""
     # Generate a remember token for the test user
-    test_user.remember()
+    token = test_user.remember()
     db.session.commit()
 
     with client:
@@ -43,7 +43,7 @@ def test_current_user_returns_right_user_when_session_is_none(client, test_user)
 
         # Set cookies to simulate remember-me
         client.set_cookie("user_id", str(test_user.id))
-        client.set_cookie("remember_token", test_user.remember_token)
+        client.set_cookie("remember_digest", token)
 
         # Hit a route that uses current_user
         response = client.get("/home")
@@ -66,7 +66,7 @@ def test_current_user_returns_none_when_remember_digest_is_wrong(client, test_us
 
         # Set cookies to simulate remember-me
         client.set_cookie("user_id", str(test_user.id))
-        client.set_cookie("remember_token", test_user.new_token())
+        client.set_cookie("remember_digest", test_user.new_token())
 
         # Hit a route that uses current_user
         response = client.get("/home")

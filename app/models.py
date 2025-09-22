@@ -11,7 +11,7 @@ class User(db.Model):
     email = db.Column(db.String(256), unique=True, nullable=False, index=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
     password_digest = db.Column(db.String, nullable=False)
-    remember_token = db.Column(db.String, nullable=True)
+    remember_digest = db.Column(db.String, nullable=True)
     admin = db.Column(db.Boolean, default=False)
     activation_digest = db.Column(db.String)
     activated = db.Column(db.Boolean, default=False)
@@ -62,20 +62,35 @@ class User(db.Model):
     
     def remember(self):
         token = self.new_token()
-        self.remember_token = token
+        self.remember_digest = bcrypt.generate_password_hash(token).decode('utf-8')
         db.session.commit()
         return token
     
-    def authenticated(self, token):
-        return self.remember_token == token
-    
+    def authenticated(self, attribute: str, token: str) -> bool:
+        """
+    Checks if the given token matches the stored bcrypt digest
+    for the specified attribute on the user object.
+
+    attribute: e.g. 'activation' or 'password'
+    token: plain text token to verify
+    """
+    # Look up e.g. user.activation_digest dynamically
+        digest = getattr(self, f"{attribute}_digest", None)
+        print(f"DEBUG: models.py: {digest}")
+        if not digest:  # no digest stored
+            return False
+        print(f"DEBUG: models.py: token {token}")
+        hash = bcrypt.check_password_hash(digest, token)
+        print(f"DEBUG: models.py: hash {hash}")
+        return hash
+        
     def forget(self):
-        self.remember_token = None
+        self.remember_digest = None
         db.session.commit()
 
     def create_activation_digest(self):
         token = self.new_token()
-        self.activation_digest = token
+        self.activation_digest = bcrypt.generate_password_hash(token).decode('utf-8')
         return token
 
 @event.listens_for(User, "before_insert")
