@@ -13,7 +13,7 @@ class User(db.Model):
     password_digest = db.Column(db.String, nullable=False)
     remember_digest = db.Column(db.String, nullable=True)
     admin = db.Column(db.Boolean, default=False)
-    activation_digest = db.Column(db.String)
+    activation_digest = db.Column(db.String, unique=True, index=True)
     activated = db.Column(db.Boolean, default=False)
     activated_at = db.Column(db.DateTime)
 
@@ -92,6 +92,11 @@ class User(db.Model):
         token = self.new_token()
         self.activation_digest = bcrypt.generate_password_hash(token).decode('utf-8')
         return token
+       
+    def activate(self):
+        self.activated = True
+        self.activated_at = datetime.now(UTC)
+        db.session.commit()
 
 @event.listens_for(User, "before_insert")
 def user_before_insert(mapper, connection, target):

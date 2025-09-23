@@ -1,4 +1,5 @@
-from flask import Blueprint
+from flask import Blueprint, flash, redirect, url_for
+from app.services.account_activations import aa_edit
 
 aa_bp = Blueprint(
     "account_activations",
@@ -10,5 +11,12 @@ aa_bp = Blueprint(
 def edit(token):
     # token is automatically passed as a string
     # do whatever you need (lookup user, verify token, etc.)
-    return f"Editing activation for token: {token}"
+    user = aa_edit(token)
+    if user:
+        flash("Account activated!", "success")
+        return redirect(url_for("users.show_user", user_id=user.id))
+    else:
+        flash("Invalid activation link", "danger")
+        return redirect(url_for("main.index"))
+    
 

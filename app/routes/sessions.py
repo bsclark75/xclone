@@ -17,26 +17,24 @@ def create():
     remember_me = request.form.get("remember_me")
 
     user = authenticate_user(email, password)
-
-    if not user:
-        flash("Invalid email or password", "danger")
-        return render_template("sessions/new.html", email=email, remember_me=remember_me)
-
-    # ✅ Don't overwrite Flask's session
-    log_in(user)
-
-    # ✅ Redirect to the intended page if friendly forwarding is set
     next_page = session.pop("next", None)
-    response = make_response(redirect(next_page or url_for("main.index")))
-
-    # ✅ Handle remember-me cookies
-    if remember_me == "1":
-        response = remember(user, response)
+    response = make_response(redirect(next_page or url_for("main.index")))    
+    if user:
+        if user.activated:
+            log_in(user)
+            if remember_me == "1":
+                response = remember(user, response)
+            else:
+                response = forget(user, response)
+            return response
+        else:
+            message = "Account not activated."
+            message += "Check your email for the activation link"
+            flash(message, "warning")
+            return render_template("index.html")
     else:
-        response = forget(user, response)
-
-    flash("Logged in successfully!", "success")
-    return response
+        flash("Invalid email/password combination", "danger")
+        return render_template("sessions/new.html")
 
 # DELETE /sessions → Logout
 @sessions_bp.route("/logout", methods=["DELETE", "POST"])
