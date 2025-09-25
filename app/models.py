@@ -18,7 +18,7 @@ class User(db.Model):
     activated_at = db.Column(db.DateTime)
 
     def __repr__(self):
-        return f"<User {self.name}>"
+        return f"<User {self.id, self.name, self.email, self.created_at, self.admin, self.activated}>"
 
     # Use property-style setter to handle password hashing automatically
     def set_password(self, plaintext_password):
@@ -76,12 +76,12 @@ class User(db.Model):
     """
     # Look up e.g. user.activation_digest dynamically
         digest = getattr(self, f"{attribute}_digest", None)
-        print(f"DEBUG: models.py: {digest}")
+        #print(f"DEBUG: models.py: {digest}")
         if not digest:  # no digest stored
             return False
-        print(f"DEBUG: models.py: token {token}")
+        #print(f"DEBUG: models.py: token {token}")
         hash = bcrypt.check_password_hash(digest, token)
-        print(f"DEBUG: models.py: hash {hash}")
+        #print(f"DEBUG: models.py: hash {hash}")
         return hash
         
     def forget(self):
@@ -98,7 +98,3 @@ class User(db.Model):
         self.activated_at = datetime.now(UTC)
         db.session.commit()
 
-@event.listens_for(User, "before_insert")
-def user_before_insert(mapper, connection, target):
-    if not target.activation_digest:
-        target.create_activation_digest()

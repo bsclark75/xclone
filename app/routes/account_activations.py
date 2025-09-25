@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, url_for
+from flask import Blueprint, flash, redirect, url_for, request
 from app.services.account_activations import aa_edit
 
 aa_bp = Blueprint(
@@ -7,11 +7,13 @@ aa_bp = Blueprint(
     url_prefix="/account-activations"
 )
 
-@aa_bp.route("/<string:token>/edit", methods=["GET", "POST"])
+@aa_bp.route("/<path:token>/edit", methods=["GET", "POST"])
 def edit(token):
     # token is automatically passed as a string
     # do whatever you need (lookup user, verify token, etc.)
-    user = aa_edit(token)
+    #print(f"Token received: {repr(token)}")
+    uid = request.args.get('uid', type=int)
+    user = aa_edit(token, uid)
     if user:
         flash("Account activated!", "success")
         return redirect(url_for("users.show_user", user_id=user.id))

@@ -24,9 +24,9 @@ def db_session(app):
         db.session.rollback()
 
 @pytest.fixture
-def new_user(app):
+def admin_user(app):
     """Creates and returns a test user."""
-    user = User(name="Brian Clark", email="brian@example.com", admin=True)
+    user = User(name="Brian Clark", email="brian@example.com", admin=True, activated= True)
     user.set_password("password123")
     db.session.add(user)
     db.session.commit()
@@ -36,7 +36,8 @@ def new_user(app):
 def test_user(app):
     """Create a sample user for login tests."""
     user = User(name="John Doe", email="johndoe@example.com")
-    user.set_password("password123")    
+    user.set_password("password123")
+    user.activated = True    
     db.session.add(user)
     db.session.commit()
     return user

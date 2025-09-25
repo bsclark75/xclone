@@ -9,11 +9,10 @@ def test_account_activation(app, capsys):
     """
     from app.services import user_mailer as mailer
 
-    user = create_user(name="alice", email="alice@example.com")
-    token = user.activation_digest
+    user, token = create_user(name="alice", email="alice@example.com")
 
     with app.test_request_context():
-        mailer.send_activation_email(user)
+        mailer.send_activation_email(user,token)
 
     # Capture what was printed to stdout
     captured = capsys.readouterr()

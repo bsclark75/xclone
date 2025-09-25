@@ -2,16 +2,19 @@ from flask import render_template, url_for
 from flask_mailman import EmailMultiAlternatives
 #from app import mailer
 
-def send_activation_email(user):
-    activation_url = url_for("account_activations.edit", token=user.activation_digest, _external=True)
+def send_activation_email(user, token):
+    #print(f"send_activation_email: {user.id}")
+    activation_url = url_for("account_activations.edit", token=token, uid=user.id, _external=True)
+    #print(f"send_activation_email: {activation_url}")
     subject = "Activate Your Account"
     to = [user.email]
 
     # Render templates
     text_body = render_template("emails/activation.txt", user=user, activation_url=activation_url)
     html_body = render_template("emails/activation.html", user=user, activation_url=activation_url)
-
+    #print("message is ready")
     # Create message with both text + HTML parts
     msg = EmailMultiAlternatives(subject, text_body, to=to)
     msg.attach_alternative(html_body, "text/html")
     msg.send()
+    #print("message sent")

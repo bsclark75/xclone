@@ -11,7 +11,7 @@ def test_header_for_logged_out_user(client):
     assert "Users" not in html
 
 # ✅ Test when user IS logged in
-def test_header_for_logged_in_user(client, new_user):
+def test_header_for_logged_in_user(client, admin_user):
     # Log in first
     login(client, "brian@example.com", "password123")
 
@@ -22,9 +22,9 @@ def test_header_for_logged_in_user(client, new_user):
     assert "Log in" not in html
     assert "Log Out" in html
     assert "Users" in html
-    #assert new_user.name in html  # Verify current_user's name is displayed
+    #assert admin_user.name in html  # Verify current_user's name is displayed
 
-def test_login_with_remember_me(client, new_user):
+def test_login_with_remember_me(client, admin_user):
     """Ensure logging in with remember_me sets the cookie."""
 
     response = login(client, "brian@example.com", "password123", remember_me=True)
@@ -37,7 +37,7 @@ def test_login_with_remember_me(client, new_user):
     assert any("remember_digest=" in header for header in set_cookie_headers)  
     assert any("user_id=" in header for header in set_cookie_headers)
 
-def test_login_without_remember_me(client, new_user):
+def test_login_without_remember_me(client, admin_user):
     """Ensure logging in without remember_me does NOT set the cookie."""
     response = login(client, "brian@example.com", "password123", remember_me=False)
 
@@ -47,7 +47,7 @@ def test_login_without_remember_me(client, new_user):
     assert any("remember_digest=" not in header for header in set_cookie_headers)
 
 
-def test_remember_function_sets_cookies(app, new_user):
+def test_remember_function_sets_cookies(app, admin_user):
     from app.services.user_service import remember
     from flask import make_response
 
@@ -56,7 +56,7 @@ def test_remember_function_sets_cookies(app, new_user):
         response = make_response("Testing remember cookies")
 
         # ✅ Call the updated remember() function
-        response = remember(new_user, response)
+        response = remember(admin_user, response)
 
         # ✅ Grab all cookies set on the response
         cookies = response.headers.getlist("Set-Cookie")

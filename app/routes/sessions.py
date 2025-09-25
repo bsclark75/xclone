@@ -22,6 +22,7 @@ def create():
     if user:
         if user.activated:
             log_in(user)
+            flash("Logged in successfully!", "info")
             if remember_me == "1":
                 response = remember(user, response)
             else:
@@ -31,9 +32,9 @@ def create():
             message = "Account not activated."
             message += "Check your email for the activation link"
             flash(message, "warning")
-            return render_template("index.html")
+            return render_template("home.html")
     else:
-        flash("Invalid email/password combination", "danger")
+        flash("Invalid email or password", "danger")
         return render_template("sessions/new.html")
 
 # DELETE /sessions → Logout

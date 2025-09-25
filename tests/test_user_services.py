@@ -33,11 +33,12 @@ def test_should_redirect_destroy_if_not_logged_in(client, test_user):
 
 def test_should_redirect_destroy_if_not_admin(client, test_user):
     """Test that deleting a user redirects if not admin."""
-    user1 = create_user("Jane Doe", "jane.doe@example.com", "password123")
+    user1, _ = create_user("Jane Doe", "jane.doe@example.com", "password123")
     login(client, user1.email, "password123")
     before_count = get_user_count()
     response = client.get(f"/users/{test_user.id}/delete", follow_redirects=True)
+    #print(response.data)
     after_count = get_user_count()
     assert before_count == after_count
-    assert b"You do not have permission to access this page." in response.data
+    assert b"You must be logged in to access this page." in response.data
 

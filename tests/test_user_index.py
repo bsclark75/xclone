@@ -4,9 +4,9 @@ from app.models import User
 from app import db
 from tests.utils import create_user, login, get_user_count
 
-def test_index_including_pagination_and_delete_links(client, new_user, test_user):
+def test_index_including_pagination_and_delete_links(client, admin_user, test_user):
     # log in as admin
-    login(client, new_user.email, "password123", follow=True)
+    login(client, admin_user.email, "password123", follow=True)
 
     # Create extra users so pagination exists
     for i in range(6):
@@ -14,6 +14,7 @@ def test_index_including_pagination_and_delete_links(client, new_user, test_user
 
     # Request /users page
     response = client.get("/users?page=1&size=5")
+    print(response.data)
     assert response.status_code == 200
 
     # Parse HTML using BeautifulSoup
@@ -34,7 +35,7 @@ def test_index_including_pagination_and_delete_links(client, new_user, test_user
     assert profile_links, "Expected at least one profile link"
 
     # --- VERIFY DELETE LINKS (only if admin) ---
-    if new_user.admin:
+    if admin_user.admin:
         #print(soup.prettify())
         delete_links = [a["href"] for a in soup.select("ul.users li a") if re.match(r"^/users/\d+/delete$", a.get("href", ""))]
         assert delete_links, "Expected at least one delete link for admin"

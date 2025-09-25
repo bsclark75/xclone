@@ -3,7 +3,7 @@ from app.models import User
 from tests.utils import create_user
 
 def test_create_valid_user(db_session):
-    user = create_user(name="Alice Johnson", email="alice@example.com")
+    user, _ = create_user(name="Alice Johnson", email="alice@example.com")
     saved_user = User.query.filter_by(email="alice@example.com").first()
     assert saved_user is not None
     assert saved_user.name == "Alice Johnson"
@@ -39,7 +39,7 @@ def test_email_too_long(db_session):
     "alice+bob@baz.cn"
 ])
 def test_valid_formatted_email_address(db_session, email):
-    user = create_user(name="Jon Doe", email=email)
+    user, _ = create_user(name="Jon Doe", email=email)
     assert user.email == email.lower()
 
 

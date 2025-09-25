@@ -1,10 +1,11 @@
 from app.models import User, db
 from sqlalchemy.exc import IntegrityError
+from app.services.user_mailer import send_activation_email
 
 
 def create_user(name, email, password, confirm_password):
     """Handles user creation with validation."""
-
+    #print("Create user starts here")
     # Basic validation
     if password != confirm_password:
         raise ValueError("Passwords do not match.")
@@ -18,10 +19,13 @@ def create_user(name, email, password, confirm_password):
     # Create the user instance
     user = User(name=name, email=email)
     user.set_password(password)
-
+    token = user.create_activation_digest()
+    #print(user)
     db.session.add(user)
     try:
         db.session.commit()
+        #print("Successfully commited")
+        send_activation_email(user, token)
         return user
 
     except IntegrityError:
@@ -32,9 +36,9 @@ def create_user(name, email, password, confirm_password):
         db.session.rollback()
         raise e
 
-    except Exception:
-        db.session.rollback()
-        raise ValueError("An unexpected error occurred while creating the user.")
+    #except Exception:
+    #    db.session.rollback()
+    #    raise ValueError("An unexpected error occurred while creating the user.")
 
 
 def update_user(user, name, email, password=None, confirm_password=None):

@@ -32,7 +32,6 @@ def signup():
                     request.form.get("email"),
                     request.form.get("password"),
                     request.form.get("confirm_password"))
-            send_activation_email(user)
             flash("Please check your email to activate your account", "info")
             return redirect(url_for("main.home"))
         except ValueError as e:

@@ -6,9 +6,10 @@ def create_user(name="Test User", email="test@example.com", password="password12
     """Create a persisted user using the model's bcrypt-based password setter."""
     user = User(name=name, email=email, admin=admin)
     user.set_password(password)  # bcrypt via model
+    token = user.create_activation_digest()
     db.session.add(user)
     db.session.commit()
-    return user
+    return user, token
 
 def signup(client, name="Test User", email="test@example.com",
            password="password123", confirm_password=None, follow=True):

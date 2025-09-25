@@ -11,12 +11,6 @@ def test_login_success(client, test_user):
     }, follow_redirects=True)
 
     assert response.status_code == 200
-
-    if b"Logged in successfully!" not in response.data:
-        print("\n=== DEBUG RESPONSE ===")
-        print(response.data.decode("utf-8"))
-        print("======================")
-
     assert b"Logged in successfully!" in response.data
 
 def test_login_failure(client, test_user):
@@ -28,6 +22,7 @@ def test_login_failure(client, test_user):
 
     # ✅ Should flash danger message and stay on login page
     assert response.status_code == 200
+    #print(response.data)
     assert b"Invalid email or password" in response.data
 
 def test_current_user_returns_right_user_when_session_is_none(client, test_user):
