@@ -34,11 +34,13 @@ def create_app(config_class=None):
     from app.routes.sessions import sessions_bp
     from app.routes.users import users_bp
     from app.routes.account_activations import aa_bp
+    from app.routes.password_resets import password_reset_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(sessions_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(aa_bp)
+    app.register_blueprint(password_reset_bp)
 
     # Make template helpers globally available
     app.jinja_env.globals.update(

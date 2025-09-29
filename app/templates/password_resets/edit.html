@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Reset Password</h1>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+
+        <form method="POST" action="{{ url_for('password_resets.update', token=token) }}">
+            <input type="hidden" name="email" value="{{ user.email }}">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control">
+            <label>Confirmation</label>
+            <input type="password" name="password_confirmation" class="form-control">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

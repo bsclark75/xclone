@@ -13,6 +13,7 @@
                 <span>Remember me on this computer</span></label>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
+        <a href="{{ url_for('password_resets.new')}}">Forgot Password</a>
         <p>New User? <a href="{{ url_for('main.signup') }}">Sign Up Now!</a> </p>
     </div>
 </div>

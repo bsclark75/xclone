@@ -1,5 +1,5 @@
 # seed_db.py
-from flask_migrate import downgrade, upgrade
+from flask_migrate import upgrade
 from app import create_app, db
 from app.models import User
 from datetime import datetime
@@ -10,8 +10,11 @@ fake = Faker()
 def reset_and_seed(num_users=50):
     app = create_app()
     with app.app_context():
-        # Roll back to base, then upgrade through all migrations
-        downgrade("base")
+        # Drop and recreate tables
+        db.drop_all()
+        db.create_all()
+
+        # Apply migrations
         upgrade()
 
         # Seed users

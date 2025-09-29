@@ -53,3 +53,13 @@ def is_current_user(user):
 def store_location():
     if request.method == "GET" and "next" not in session:
         session["next"] = request.url
+
+
+def valid_user(user, token):
+    return user.activated and user.authenticated("reset", token)
+
+def get_user(field, value):
+    # field: column name as string, value: value to match
+    user = User.query.filter_by(**{field: value}).first()
+    return user
+

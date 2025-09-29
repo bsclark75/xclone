@@ -18,3 +18,14 @@ def send_activation_email(user, token):
     msg.attach_alternative(html_body, "text/html")
     msg.send()
     #print("message sent")
+
+def send_password_reset(user, token):
+    reset_url = url_for("password_resets.edit", token=token, uid=user.id, _external=True)
+    subject = "Reset Your Account"
+    to = [user.email]
+    text_body = render_template("emails/password_reset.txt", user=user, reset_url=reset_url)
+    html_body = render_template("emails/password_reset.html", user=user, reset_url=reset_url)
+    msg = EmailMultiAlternatives(subject, text_body, to=to)
+    msg.attach_alternative(html_body, "text/html")
+    msg.send()
+    

@@ -1,7 +1,8 @@
 from app.extensions import db, bcrypt
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timezone, timedelta
 from sqlalchemy.orm import validates
-from sqlalchemy import event
+from app.services.user_mailer import send_password_reset
+#from sqlalchemy import event
 import re
 
 class User(db.Model):
@@ -16,6 +17,8 @@ class User(db.Model):
     activation_digest = db.Column(db.String, unique=True, index=True)
     activated = db.Column(db.Boolean, default=False)
     activated_at = db.Column(db.DateTime)
+    reset_digest = db.Column(db.String, unique=True, index=True)
+    reset_sent_at = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<User {self.id, self.name, self.email, self.created_at, self.admin, self.activated}>"
@@ -98,3 +101,13 @@ class User(db.Model):
         self.activated_at = datetime.now(UTC)
         db.session.commit()
 
+    def create_reset_digest(self):
+        token = self.new_token()
+        self.reset_digest = bcrypt.generate_password_hash(token).decode('utf-8')
+        return token
+    
+    def send_password_reset_email(self, token):
+        send_password_reset(self, token)
+
+    def password_reset_expired(self):
+        return self.reset_sent_at < datetime.now() - timedelta(hours=2)
