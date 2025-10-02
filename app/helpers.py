@@ -1,6 +1,6 @@
 from flask import session, g, request
-from app.models import User
 from app.services.user_service import forget
+from app.utils.users_utils import get_user
 
 
 def gravatar_for(user, size=80):
@@ -14,7 +14,7 @@ def current_user():
     # 1. If user_id is in session
     if "user_id" in session:
         if not hasattr(g, "current_user"):
-            g.current_user = User.query.get(session["user_id"])
+            g.current_user = get_user("id",session["user_id"])
         return g.current_user
 
     # 2. Else check cookies
@@ -22,7 +22,7 @@ def current_user():
     remember_digest = request.cookies.get("remember_digest")
     #print(f"helpers.py: remember_digest {remember_digest}")
     if user_id and remember_digest:
-        user = User.query.get(user_id)
+        user = get_user("id", user_id)
         #print(remember_digest)
         if user and user.authenticated("remember",remember_digest):
             log_in(user)  # Store back into session
@@ -57,9 +57,4 @@ def store_location():
 
 def valid_user(user, token):
     return user.activated and user.authenticated("reset", token)
-
-def get_user(field, value):
-    # field: column name as string, value: value to match
-    user = User.query.filter_by(**{field: value}).first()
-    return user
 

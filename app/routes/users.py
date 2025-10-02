@@ -2,20 +2,21 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from app.models import User
 from app.services.user_service import update_user, destory_user
 from app.utils.auth import logged_in_user, correct_user, admin_user
-from flask_paginate import Pagination, get_page_parameter
+from flask_paginate import Pagination, get_page_parameter 
+from app.utils.users_utils import get_user_or_404
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
 @users_bp.route("<int:user_id>")
 def show_user(user_id):
-    user = User.query.get_or_404(user_id)
+    user = get_user_or_404("id", user_id)
     return render_template("users/show.html", user=user, title=user.name)
 
 @users_bp.route("<int:user_id>/edit", methods=["GET", "POST"])
 @logged_in_user
 @correct_user
 def edit_user(user_id):
-    user = User.query.get_or_404(user_id)
+    user = get_user_or_404("id", user_id)
     if request.method == "POST":
         try:
             update_user(user,

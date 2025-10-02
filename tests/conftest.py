@@ -1,11 +1,11 @@
 import pytest
 from app import create_app, db
-from config import TestConfig
+from config import TestingConfig
 from app.models import User
 
 @pytest.fixture
 def app():
-    app = create_app(TestConfig)
+    app = create_app(TestingConfig)
     with app.app_context():
         db.create_all()
         yield app

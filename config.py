@@ -1,17 +1,55 @@
 import os
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.abspath(os.path.dirname(__file__))
+instance_dir = os.path.join(basedir, "instance")
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "dev_secret_key"
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or \
-        "sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3")
+    SECRET_KEY = os.environ.get("SECRET_KEY", "supersecretkey")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    ASSETS_DEBUG = True
-    ASSETS_AUTO_BUILD = True  # Rebuild automatically when files change
+
+    # Default DB (overridden in subclasses)
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(instance_dir, "app.db")
+
+    # Email (override in subclasses)
+    MAIL_SERVER = os.environ.get("MAIL_SERVER", "localhost")
+    MAIL_PORT = int(os.environ.get("MAIL_PORT", 25))
+    MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", "false").lower() in ["true", "1"]
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
+
+    # Flask-Mail console backend setting
+    MAIL_BACKEND = "smtp"  # default, override in subclasses
+
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DEV_DATABASE_URL", "sqlite:///" + os.path.join(instance_dir, "dev.db")
+    )
+
+    # Show emails in console
     MAIL_BACKEND = "console"
 
 
-class TestConfig(Config):
+class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
+    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "TEST_DATABASE_URL", "sqlite:///" + os.path.join(instance_dir, "test.db")
+    )
+
+    # Allow choice: default console unless TEST_EMAIL is set
+    MAIL_BACKEND = "console" if not os.environ.get("TEST_EMAIL") else "smtp"
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+
+    def __init__(self):
+        if not self.SQLALCHEMY_DATABASE_URI:
+            raise RuntimeError("DATABASE_URL must be set in production!")
+
+    # Always real email
+    MAIL_BACKEND = "smtp"

@@ -11,3 +11,4 @@ faker
 flask-paginate
 beautifulsoup4
 flask-mailman
+gunicorn

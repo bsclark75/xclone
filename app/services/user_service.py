@@ -1,6 +1,7 @@
 from app.models import User, db
 from sqlalchemy.exc import IntegrityError
 from app.services.user_mailer import send_activation_email
+from app.utils.users_utils import get_user
 
 
 def create_user(name, email, password, confirm_password):
@@ -79,7 +80,7 @@ def update_user(user, name, email, password=None, confirm_password=None):
 def authenticate_user(email, password):
     """Authenticate a user by email and password."""
     email = email.strip().lower()
-    user = User.query.filter_by(email=email).first()
+    user = get_user("email", email)
     if user and user.check_password(password):
         return user
     return None
@@ -112,7 +113,7 @@ def forget(user, response):
     return response
 
 def destory_user(user_id):
-    user = User.query.get(user_id)
+    user = get_user("id", user_id)
     if user:
         db.session.delete(user)
         db.session.commit()
