@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      FLASK_ENV: production
+      SQLALCHEMY_DATABASE_URI: postgresql://postgres:postgres@db:5432/xclone
+      SECRET_KEY: supersecret
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: xclone
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"   # web ui
+      - "1025:1025"   # smtp
+
+  init-admin:
+    build: .
+    command: python setup_admin.py
+    environment:
+      FLASK_ENV: production
+      SQLALCHEMY_DATABASE_URI: postgresql://postgres:postgres@db:5432/xclone
+      SECRET_KEY: supersecret
+    depends_on:
+      - db
+      - web
+
+volumes:
+  postgres_data:

@@ -45,7 +45,11 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = (
+        os.getenv("SQLALCHEMY_DATABASE_URI")
+        or os.getenv("DATABASE_URL")
+        or "sqlite:///xclone.db"
+    )
 
     def __init__(self):
         if not self.SQLALCHEMY_DATABASE_URI:
@@ -53,3 +57,10 @@ class ProductionConfig(Config):
 
     # Always real email
     MAIL_BACKEND = "smtp"
+    MAIL_SERVER="mailhog"
+    MAIL_PORT=1025
+    MAIL_USE_TLS=False
+    MAIL_USE_SSL=False
+    MAIL_DEFAULT_SENDER="noreply@example.com"
+
+

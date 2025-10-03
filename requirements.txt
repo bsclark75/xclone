@@ -1,14 +1,13 @@
 Flask==3.0.0
 Flask-SQLAlchemy==3.1.1
-pytest==8.2.0
 flask-assets
 libsass
 flask-migrate
-bcrypt
+flask_bcrypt
 flask-wtf
 WTForms
-faker
 flask-paginate
 beautifulsoup4
 flask-mailman
 gunicorn
+psycopg2-binary>=2.9
