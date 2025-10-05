@@ -28,5 +28,4 @@ EXPOSE 8000
 
 # Run Gunicorn as WSGI server
 # Replace 'app:create_app()' with your actual app factory if different
-RUN python setup_admin.py
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:create_app()"]
