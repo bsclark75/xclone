@@ -1,9 +1,15 @@
 from app.extensions import db, bcrypt
-from datetime import datetime, UTC, timezone, timedelta
 from sqlalchemy.orm import validates
 from app.services.user_mailer import send_password_reset
 #from sqlalchemy import event
 import re
+from datetime import datetime, timezone, timedelta
+
+try:
+    UTC = timezone.utc
+except AttributeError:
+    UTC = timezone.utc  # Fallback for Python < 3.11
+
 
 class User(db.Model):
     __tablename__ = "users"
