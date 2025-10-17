@@ -1,0 +1,16 @@
+# Terraform local state
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+
+# Terraform variable files (may contain secrets)
+terraform.tfvars
+
+# Shell helper scripts that may store credentials or environment references
+use_terraform_admin.sh
+
+# Any local output or logs
+*.log
+*.tfplan
+*.auto.tfvars

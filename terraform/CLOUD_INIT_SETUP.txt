@@ -1,0 +1,20 @@
+# CLOUD INIT SETUP INSTRUCTIONS
+
+This `cloud-init.tpl` file is designed to be rendered by Terraform during EC2 provisioning.
+
+Terraform automatically substitutes the following template variables:
+  - ${repo_url}      → Git URL of the application
+  - ${repo_branch}   → Branch to deploy (e.g., "production")
+  - ${secret_arn}    → ARN of the AWS Secrets Manager secret (xclone/credentials)
+  - ${domain}        → Public domain name for the app
+  - ${email}         → Email for Certbot SSL registration
+  - ${aws_region}    → AWS region to fetch secrets and resources
+
+Sensitive data (DB passwords, API keys, SMTP credentials) are **not stored here**.
+They are fetched securely from **AWS Secrets Manager** and written to `/opt/xclone/.env`.
+
+If you clone this repo:
+1. Create a secret in AWS Secrets Manager called `xclone/credentials`.
+2. Define your environment variables in that secret JSON.
+3. Run `terraform apply` to launch and configure your EC2 instance.
+4. Cloud-init will handle everything else automatically.
