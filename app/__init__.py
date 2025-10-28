@@ -6,17 +6,20 @@ from app.helpers import gravatar_for, logged_in, current_user
 def create_app(config_class=None):
     app = Flask(__name__, instance_relative_config=True)
 
-    # Pick config
     if config_class:
         app.config.from_object(config_class)
     else:
-        env = os.environ.get("FLASK_ENV", "production").lower()
+        env = os.environ.get("APP_CONFIG", "production").lower()
+
         if env == "development":
-            app.config.from_object("config.DevelopmentConfig")
+            from config import DevelopmentConfig
+            app.config.from_object(DevelopmentConfig)
         elif env == "testing":
-            app.config.from_object("config.TestingConfig")
+            from config import TestingConfig
+            app.config.from_object(TestingConfig)
         else:
-            app.config.from_object("config.ProductionConfig")
+            from config import ProductionConfig
+            app.config.from_object(ProductionConfig)
 
     # Initialize extensions
     db.init_app(app)

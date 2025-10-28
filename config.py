@@ -30,12 +30,7 @@ class DevelopmentConfig(Config):
         "DEV_DATABASE_URL", "sqlite:///" + os.path.join(instance_dir, "dev.db")
     )
 
-    # Use MailHog by default
-    MAIL_SERVER = os.environ.get("MAIL_SERVER", "mailhog")
-    MAIL_PORT = int(os.environ.get("MAIL_PORT", 1025))
-    MAIL_USE_TLS = False
-    MAIL_USE_SSL = False
-    MAIL_BACKEND = "smtp"
+    MAIL_BACKEND = "console"
     MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER", "noreply@localhost")
 
 

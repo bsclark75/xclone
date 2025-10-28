@@ -119,3 +119,33 @@ def destory_user(user_id):
         db.session.commit()
         return True
     return False
+
+def promote_user(user_id):
+    user = get_user("id", user_id)
+    if user:
+        user.admin = True
+        db.session.commit()
+        return True
+    return False
+
+def confirm_user(user_id):
+    user = get_user("id", user_id)
+    if not user:
+        return None, None, None
+
+    if not user.admin:
+        message = "Are you sure you trust this user with admin privileges?"
+        action = "promote"
+    else:
+        message = "Are you sure you want to demote this user from admin privileges?"
+        action = "demote"
+
+    return user, message, action
+
+def demote_user(user_id):
+    user = get_user("id", user_id)
+    if user:
+        user.admin = False
+        db.session.commit()
+        return True
+    return False

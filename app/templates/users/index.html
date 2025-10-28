@@ -17,6 +17,11 @@
             {% set cu = current_user() %}
             {% if cu and cu.admin and cu.id != user.id %}
                 |  <a href="{{ url_for('users.delete', user_id=user.id) }}">Delete</a>
+                {% if not user.admin %}
+                    | <a href="{{ url_for('users.confirm', user_id=user.id) }}">Promote to Admin</a>
+                {% else %}
+                    | <a href="{{ url_for('users.confirm', user_id=user.id) }}">Demote from Admin</a>
+                {% endif %}
             {% endif %}
         </li>
     {% endfor %}

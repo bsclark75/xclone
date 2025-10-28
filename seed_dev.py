@@ -3,16 +3,24 @@ from app import create_app, db
 from app.models import User
 from datetime import datetime
 from faker import Faker
+import os
 
 fake = Faker()
 
 def reset_and_seed(num_users=50):
+    # Ensure you're using dev config
     app = create_app("config.DevelopmentConfig")
     with app.app_context():
-        db.drop_all()
-        db.create_all()
+        # Remove the existing database file manually (for SQLite)
+        db_path = os.path.join(app.instance_path, "dev.db")
+        if os.path.exists(db_path):
+            os.remove(db_path)
+            print("🗑️ Removed old dev.db")
+
+        # Run migrations to rebuild tables
         upgrade()
 
+        # Seed the database
         admin = User(
             name="Admin User",
             email="admin@example.com",

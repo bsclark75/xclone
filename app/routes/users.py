@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from app.models import User
-from app.services.user_service import update_user, destory_user
+from app.services.user_service import update_user, destory_user, promote_user, confirm_user, demote_user
 from app.utils.auth import logged_in_user, correct_user, admin_user
 from flask_paginate import Pagination, get_page_parameter 
 from app.utils.users_utils import get_user_or_404
@@ -53,3 +53,40 @@ def delete(user_id):
         flash("User not found.", "danger")
     return redirect(url_for("users.index"))
 
+@users_bp.route("<int:user_id>/promote", methods=["POST"])
+@logged_in_user
+@admin_user
+def promote(user_id):
+    if promote_user(user_id):
+        flash("User promoted successfully.", "success")
+    else:
+        flash("User not found.", "danger")
+    return redirect(url_for("users.index"))
+
+@users_bp.route("/<int:user_id>/demote", methods=["POST"])
+@logged_in_user
+@admin_user
+def demote(user_id):
+    # Prevent admins from demoting themselves
+    if user_id == session.get("user_id"):
+        flash("You cannot demote yourself.", "warning")
+        return redirect(url_for("users.index"))
+
+    if demote_user(user_id):
+        flash("User demoted successfully.", "success")
+    else:
+        flash("User not found.", "danger")
+
+    return redirect(url_for("users.index"))
+
+
+@users_bp.route("/<int:user_id>/confirm", methods=["GET"])
+@logged_in_user
+@admin_user
+def confirm(user_id):
+    user, message, action = confirm_user(user_id)
+    if not message:
+        flash("User not found.", "danger")
+        return redirect(url_for("users.index"))
+
+    return render_template("users/confirm.html", user=user, message=message, action=action)
